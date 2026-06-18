@@ -2,7 +2,7 @@
 (set-logic QF_FP)
 (set-info :source |Float32-vs-Float64 round-off error bound for the FPTaylor
   'doppler1' kernel. SAT = an input in range whose single-precision error
-  abs(f32 - f64) exceeds 1e-6 (measured in double). Generated; not hand-tuned.|)
+  abs(f32 - f64) exceeds 3.8e-5 (measured in double). Generated; not hand-tuned.|)
 (set-info :category "crafted")
 (set-info :status sat)
 (declare-const u (_ FloatingPoint 8 24))
@@ -20,5 +20,5 @@
 (define-fun f32 () (_ FloatingPoint 8 24) (fp.div roundNearestTiesToEven (fp.mul roundNearestTiesToEven (fp.neg (fp.add roundNearestTiesToEven ((_ to_fp 8 24) (_ bv1134932787 32)) (fp.mul roundNearestTiesToEven ((_ to_fp 8 24) (_ bv1058642330 32)) T))) v) (fp.mul roundNearestTiesToEven (fp.add roundNearestTiesToEven (fp.add roundNearestTiesToEven ((_ to_fp 8 24) (_ bv1134932787 32)) (fp.mul roundNearestTiesToEven ((_ to_fp 8 24) (_ bv1058642330 32)) T)) u) (fp.add roundNearestTiesToEven (fp.add roundNearestTiesToEven ((_ to_fp 8 24) (_ bv1134932787 32)) (fp.mul roundNearestTiesToEven ((_ to_fp 8 24) (_ bv1058642330 32)) T)) u))))
 (define-fun f64 () (_ FloatingPoint 11 53) (fp.div roundNearestTiesToEven (fp.mul roundNearestTiesToEven (fp.neg (fp.add roundNearestTiesToEven ((_ to_fp 11 53) (_ bv4644537666646730342 64)) (fp.mul roundNearestTiesToEven ((_ to_fp 11 53) (_ bv4603579539098121011 64)) Td))) vd) (fp.mul roundNearestTiesToEven (fp.add roundNearestTiesToEven (fp.add roundNearestTiesToEven ((_ to_fp 11 53) (_ bv4644537666646730342 64)) (fp.mul roundNearestTiesToEven ((_ to_fp 11 53) (_ bv4603579539098121011 64)) Td)) ud) (fp.add roundNearestTiesToEven (fp.add roundNearestTiesToEven ((_ to_fp 11 53) (_ bv4644537666646730342 64)) (fp.mul roundNearestTiesToEven ((_ to_fp 11 53) (_ bv4603579539098121011 64)) Td)) ud))))
 (define-fun err () (_ FloatingPoint 11 53) (fp.abs (fp.sub roundNearestTiesToEven ((_ to_fp 11 53) roundNearestTiesToEven f32) f64)))
-(assert (fp.gt err ((_ to_fp 11 53) (_ bv4517329193108106637 64))))
+(assert (fp.gt err ((_ to_fp 11 53) (_ bv4540732634960497176 64))))
 (check-sat)

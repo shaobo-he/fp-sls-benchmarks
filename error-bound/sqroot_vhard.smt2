@@ -2,7 +2,7 @@
 (set-logic QF_FP)
 (set-info :source |Float32-vs-Float64 round-off error bound for the FPTaylor
   'sqroot' kernel. SAT = an input in range whose single-precision error
-  abs(f32 - f64) exceeds 1.5e-7 (measured in double). Generated; not hand-tuned.|)
+  abs(f32 - f64) exceeds 2.3e-7 (measured in double). Generated; not hand-tuned.|)
 (set-info :category "crafted")
 (set-info :status sat)
 (declare-const y (_ FloatingPoint 8 24))
@@ -12,5 +12,5 @@
 (define-fun f32 () (_ FloatingPoint 8 24) (fp.sub roundNearestTiesToEven (fp.add roundNearestTiesToEven (fp.sub roundNearestTiesToEven (fp.add roundNearestTiesToEven ((_ to_fp 8 24) (_ bv1065353216 32)) (fp.mul roundNearestTiesToEven ((_ to_fp 8 24) (_ bv1056964608 32)) y)) (fp.mul roundNearestTiesToEven ((_ to_fp 8 24) (_ bv1040187392 32)) (fp.mul roundNearestTiesToEven y y))) (fp.mul roundNearestTiesToEven ((_ to_fp 8 24) (_ bv1031798784 32)) (fp.mul roundNearestTiesToEven (fp.mul roundNearestTiesToEven y y) y))) (fp.mul roundNearestTiesToEven ((_ to_fp 8 24) (_ bv1025507328 32)) (fp.mul roundNearestTiesToEven (fp.mul roundNearestTiesToEven (fp.mul roundNearestTiesToEven y y) y) y))))
 (define-fun f64 () (_ FloatingPoint 11 53) (fp.sub roundNearestTiesToEven (fp.add roundNearestTiesToEven (fp.sub roundNearestTiesToEven (fp.add roundNearestTiesToEven ((_ to_fp 11 53) (_ bv4607182418800017408 64)) (fp.mul roundNearestTiesToEven ((_ to_fp 11 53) (_ bv4602678819172646912 64)) yd)) (fp.mul roundNearestTiesToEven ((_ to_fp 11 53) (_ bv4593671619917905920 64)) (fp.mul roundNearestTiesToEven yd yd))) (fp.mul roundNearestTiesToEven ((_ to_fp 11 53) (_ bv4589168020290535424 64)) (fp.mul roundNearestTiesToEven (fp.mul roundNearestTiesToEven yd yd) yd))) (fp.mul roundNearestTiesToEven ((_ to_fp 11 53) (_ bv4585790320570007552 64)) (fp.mul roundNearestTiesToEven (fp.mul roundNearestTiesToEven (fp.mul roundNearestTiesToEven yd yd) yd) yd))))
 (define-fun err () (_ FloatingPoint 11 53) (fp.abs (fp.sub roundNearestTiesToEven ((_ to_fp 11 53) roundNearestTiesToEven f32) f64)))
-(assert (fp.gt err ((_ to_fp 11 53) (_ bv4504762867522569078 64))))
+(assert (fp.gt err ((_ to_fp 11 53) (_ bv4507785182071605651 64))))
 (check-sat)

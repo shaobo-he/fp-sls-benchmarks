@@ -2,7 +2,7 @@
 (set-logic QF_FP)
 (set-info :source |Float32-vs-Float64 round-off error bound for the FPTaylor
   'rigidBody2' kernel. SAT = an input in range whose single-precision error
-  abs(f32 - f64) exceeds 1e-5 (measured in double). Generated; not hand-tuned.|)
+  abs(f32 - f64) exceeds 9e-3 (measured in double). Generated; not hand-tuned.|)
 (set-info :category "crafted")
 (set-info :status sat)
 (declare-const x1 (_ FloatingPoint 8 24))
@@ -20,5 +20,5 @@
 (define-fun f32 () (_ FloatingPoint 8 24) (fp.sub roundNearestTiesToEven (fp.add roundNearestTiesToEven (fp.sub roundNearestTiesToEven (fp.add roundNearestTiesToEven (fp.mul roundNearestTiesToEven ((_ to_fp 8 24) (_ bv1073741824 32)) (fp.mul roundNearestTiesToEven x1 (fp.mul roundNearestTiesToEven x2 x3))) (fp.mul roundNearestTiesToEven ((_ to_fp 8 24) (_ bv1077936128 32)) (fp.mul roundNearestTiesToEven x3 x3))) (fp.mul roundNearestTiesToEven x2 (fp.mul roundNearestTiesToEven x1 (fp.mul roundNearestTiesToEven x2 x3)))) (fp.mul roundNearestTiesToEven ((_ to_fp 8 24) (_ bv1077936128 32)) (fp.mul roundNearestTiesToEven x3 x3))) x2))
 (define-fun f64 () (_ FloatingPoint 11 53) (fp.sub roundNearestTiesToEven (fp.add roundNearestTiesToEven (fp.sub roundNearestTiesToEven (fp.add roundNearestTiesToEven (fp.mul roundNearestTiesToEven ((_ to_fp 11 53) (_ bv4611686018427387904 64)) (fp.mul roundNearestTiesToEven x1d (fp.mul roundNearestTiesToEven x2d x3d))) (fp.mul roundNearestTiesToEven ((_ to_fp 11 53) (_ bv4613937818241073152 64)) (fp.mul roundNearestTiesToEven x3d x3d))) (fp.mul roundNearestTiesToEven x2d (fp.mul roundNearestTiesToEven x1d (fp.mul roundNearestTiesToEven x2d x3d)))) (fp.mul roundNearestTiesToEven ((_ to_fp 11 53) (_ bv4613937818241073152 64)) (fp.mul roundNearestTiesToEven x3d x3d))) x2d))
 (define-fun err () (_ FloatingPoint 11 53) (fp.abs (fp.sub roundNearestTiesToEven ((_ to_fp 11 53) roundNearestTiesToEven f32) f64)))
-(assert (fp.gt err ((_ to_fp 11 53) (_ bv4532020583610935537 64))))
+(assert (fp.gt err ((_ to_fp 11 53) (_ bv4576341768551784251 64))))
 (check-sat)

@@ -35,12 +35,13 @@ B = {
  "sine":(sine,[(-1.57079632679,1.57079632679)]),"sqroot":(sqroot,[(0,1)]),
  "sineOrder3":(sineOrder3,[(-2,2)]),
 }
-random.seed(1)
+import sys
+N = int(sys.argv[1]) if len(sys.argv) > 1 else 200000   # vectorized: samples per kernel
+g = np.random.default_rng(1)
 for name,(fn,rng) in B.items():
-    errs=[]
-    for _ in range(200000):
-        ins=[f32(random.uniform(lo,hi)) for lo,hi in rng]   # float32 inputs
-        e=abs(float(fn(f32,ins)) - fn(float,[float(i) for i in ins]))
-        errs.append(e)
-    errs.sort()
-    print(f"  {name:13s} median={st.median(errs):.3e}  p99={errs[int(len(errs)*0.99)]:.3e}  max={errs[-1]:.3e}")
+    ins = [g.uniform(lo, hi, N).astype(np.float32) for lo,hi in rng]   # float32 inputs
+    f32 = fn(np.float32, ins)
+    f64 = fn(np.float64, [a.astype(np.float64) for a in ins])
+    err = np.sort(np.abs(f32.astype(np.float64) - f64))
+    print(f"  {name:13s} median={err[N//2]:.3e}  p99={err[int(N*0.99)]:.3e}  "
+          f"p99.99={err[int(N*0.9999)]:.3e}  max={err[-1]:.3e}")

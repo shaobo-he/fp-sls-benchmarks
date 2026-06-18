@@ -9,17 +9,24 @@ The error is measured in Float64 (the float result is widened, then compared to
 the double result). Inputs are Float32, range-constrained; constants are decimal
 to_fp literals (accepted by z3/cvc5, and by fp-sls via z3-simplify preprocessing).
 """
-from decimal import Decimal
+import struct
 RNE = "roundNearestTiesToEven"
 
 class FP:
     def __init__(self, eb, sb): self.eb, self.sb = eb, sb
     def c(self, x):
-        x = str(x)
-        if 'e' in x or 'E' in x:           # SMT-LIB reals are plain decimals
-            x = format(Decimal(x), 'f')
-        lit = f"(- {x[1:]})" if x.startswith("-") else x
-        return f"((_ to_fp {self.eb} {self.sb}) {RNE} {lit})"
+        # Emit a constant as a *pure FP bit pattern* (to_fp from a bitvector of
+        # the IEEE bits) -- NOT to_fp-from-real, which pulls in the Real sort
+        # (not native QF_FP: fp-sls only handles it via z3 preprocessing, and
+        # cvc5 rejects it). Matches the SMT-COMP griggio style.
+        v = float(x)
+        if (self.eb, self.sb) == (8, 24):
+            bits = struct.unpack('<I', struct.pack('<f', v))[0]   # IEEE single
+            return f"((_ to_fp 8 24) (_ bv{bits} 32))"
+        if (self.eb, self.sb) == (11, 53):
+            bits = struct.unpack('<Q', struct.pack('<d', v))[0]   # IEEE double
+            return f"((_ to_fp 11 53) (_ bv{bits} 64))"
+        raise ValueError(f"unsupported precision {self.eb},{self.sb}")
     def add(self,a,b): return f"(fp.add {RNE} {a} {b})"
     def sub(self,a,b): return f"(fp.sub {RNE} {a} {b})"
     def mul(self,a,b): return f"(fp.mul {RNE} {a} {b})"
@@ -61,17 +68,17 @@ def sineOrder3(F,v):
 
 # name -> (expr, {var:(lo,hi)}, default-epsilon)
 BENCH = {
- # epsilon levels from probe.py: easy ~ median error (many witnesses); hard ~ p99
- # (only the worst ~1% of inputs qualify, so the SLS search must find a rare input).
- "rigidBody1":  (rigidBody1, {"x1":("-15","15"),"x2":("-15","15"),"x3":("-15","15")}, {"easy":"1e-6","hard":"3e-5"}),
- "rigidBody2":  (rigidBody2, {"x1":("-15","15"),"x2":("-15","15"),"x3":("-15","15")}, {"easy":"1e-5","hard":"2e-3"}),
- "doppler1":    (doppler1,   {"u":("-100","100"),"v":("20","20000"),"T":("-30","50")}, {"easy":"1e-6","hard":"1e-5"}),
- "verhulst":    (verhulst,   {"x":("0.1","0.3")}, {"easy":"1e-8","hard":"6e-8"}),
- "predatorPrey":(predatorPrey,{"x":("0.1","0.3")}, {"easy":"2e-9","hard":"3e-8"}),
- "turbine1":    (turbine1,   {"v":("-4.5","-0.3"),"w":("0.4","0.9"),"r":("3.8","7.8")}, {"easy":"1e-7","hard":"1e-6"}),
- "sine":        (sine,       {"x":("-1.57079632679","1.57079632679")}, {"easy":"1e-8","hard":"8e-8"}),
- "sqroot":      (sqroot,     {"y":("0","1")}, {"easy":"2e-8","hard":"1.5e-7"}),
- "sineOrder3":  (sineOrder3, {"z":("-2","2")}, {"easy":"1e-8","hard":"9e-8"}),
+ # epsilon levels (probe.py, 20M samples): easy ~ median; hard ~ p99; vhard ~ 0.99*max
+ # (vhard's witness is a near-worst-case input -- a needle, esp. for the 3-variable kernels).
+ "rigidBody1":  (rigidBody1, {"x1":("-15","15"),"x2":("-15","15"),"x3":("-15","15")}, {"easy":"1e-6","hard":"3e-5","vhard":"1e-4"}),
+ "rigidBody2":  (rigidBody2, {"x1":("-15","15"),"x2":("-15","15"),"x3":("-15","15")}, {"easy":"1e-5","hard":"2e-3","vhard":"9e-3"}),
+ "doppler1":    (doppler1,   {"u":("-100","100"),"v":("20","20000"),"T":("-30","50")}, {"easy":"1e-6","hard":"1e-5","vhard":"3.8e-5"}),
+ "verhulst":    (verhulst,   {"x":("0.1","0.3")}, {"easy":"1e-8","hard":"6e-8","vhard":"8.5e-8"}),
+ "predatorPrey":(predatorPrey,{"x":("0.1","0.3")}, {"easy":"2e-9","hard":"3e-8","vhard":"4.8e-8"}),
+ "turbine1":    (turbine1,   {"v":("-4.5","-0.3"),"w":("0.4","0.9"),"r":("3.8","7.8")}, {"easy":"1e-7","hard":"1e-6","vhard":"3.5e-6"}),
+ "sine":        (sine,       {"x":("-1.57079632679","1.57079632679")}, {"easy":"1e-8","hard":"8e-8","vhard":"1.5e-7"}),
+ "sqroot":      (sqroot,     {"y":("0","1")}, {"easy":"2e-8","hard":"1.5e-7","vhard":"2.3e-7"}),
+ "sineOrder3":  (sineOrder3, {"z":("-2","2")}, {"easy":"1e-8","hard":"9e-8","vhard":"1.85e-7"}),
 }
 
 F32, F64 = FP(8,24), FP(11,53)

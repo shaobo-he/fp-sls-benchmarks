@@ -2,7 +2,7 @@
 (set-logic QF_FP)
 (set-info :source |Float32-vs-Float64 round-off error bound for the FPTaylor
   'sineOrder3' kernel. SAT = an input in range whose single-precision error
-  abs(f32 - f64) exceeds 1e-8 (measured in double). Generated; not hand-tuned.|)
+  abs(f32 - f64) exceeds 1.85e-7 (measured in double). Generated; not hand-tuned.|)
 (set-info :category "crafted")
 (set-info :status sat)
 (declare-const z (_ FloatingPoint 8 24))
@@ -12,5 +12,5 @@
 (define-fun f32 () (_ FloatingPoint 8 24) (fp.sub roundNearestTiesToEven (fp.mul roundNearestTiesToEven ((_ to_fp 8 24) (_ bv1064597061 32)) z) (fp.mul roundNearestTiesToEven ((_ to_fp 8 24) (_ bv1040456239 32)) (fp.mul roundNearestTiesToEven (fp.mul roundNearestTiesToEven z z) z))))
 (define-fun f64 () (_ FloatingPoint 11 53) (fp.sub roundNearestTiesToEven (fp.mul roundNearestTiesToEven ((_ to_fp 11 53) (_ bv4606776461254110404 64)) zd) (fp.mul roundNearestTiesToEven ((_ to_fp 11 53) (_ bv4593815956241110911 64)) (fp.mul roundNearestTiesToEven (fp.mul roundNearestTiesToEven zd zd) zd))))
 (define-fun err () (_ FloatingPoint 11 53) (fp.abs (fp.sub roundNearestTiesToEven ((_ to_fp 11 53) roundNearestTiesToEven f32) f64)))
-(assert (fp.gt err ((_ to_fp 11 53) (_ bv4487126258331716666 64))))
+(assert (fp.gt err ((_ to_fp 11 53) (_ bv4506085130137772579 64))))
 (check-sat)

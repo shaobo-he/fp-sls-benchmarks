@@ -2,7 +2,7 @@
 (set-logic QF_FP)
 (set-info :source |Float32-vs-Float64 round-off error bound for the FPTaylor
   'predatorPrey' kernel. SAT = an input in range whose single-precision error
-  abs(f32 - f64) exceeds 3e-8 (measured in double). Generated; not hand-tuned.|)
+  abs(f32 - f64) exceeds 4.8e-8 (measured in double). Generated; not hand-tuned.|)
 (set-info :category "crafted")
 (set-info :status sat)
 (declare-const x (_ FloatingPoint 8 24))
@@ -12,5 +12,5 @@
 (define-fun f32 () (_ FloatingPoint 8 24) (fp.div roundNearestTiesToEven (fp.mul roundNearestTiesToEven ((_ to_fp 8 24) (_ bv1082130432 32)) (fp.mul roundNearestTiesToEven x x)) (fp.add roundNearestTiesToEven ((_ to_fp 8 24) (_ bv1065353216 32)) (fp.mul roundNearestTiesToEven (fp.div roundNearestTiesToEven x ((_ to_fp 8 24) (_ bv1066275963 32))) (fp.div roundNearestTiesToEven x ((_ to_fp 8 24) (_ bv1066275963 32)))))))
 (define-fun f64 () (_ FloatingPoint 11 53) (fp.div roundNearestTiesToEven (fp.mul roundNearestTiesToEven ((_ to_fp 11 53) (_ bv4616189618054758400 64)) (fp.mul roundNearestTiesToEven xd xd)) (fp.add roundNearestTiesToEven ((_ to_fp 11 53) (_ bv4607182418800017408 64)) (fp.mul roundNearestTiesToEven (fp.div roundNearestTiesToEven xd ((_ to_fp 11 53) (_ bv4607677814759028163 64))) (fp.div roundNearestTiesToEven xd ((_ to_fp 11 53) (_ bv4607677814759028163 64)))))))
 (define-fun err () (_ FloatingPoint 11 53) (fp.abs (fp.sub roundNearestTiesToEven ((_ to_fp 11 53) roundNearestTiesToEven f32) f64)))
-(assert (fp.gt err ((_ to_fp 11 53) (_ bv4494622300311939371 64))))
+(assert (fp.gt err ((_ to_fp 11 53) (_ bv4497342383406072287 64))))
 (check-sat)

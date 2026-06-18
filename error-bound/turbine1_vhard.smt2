@@ -2,7 +2,7 @@
 (set-logic QF_FP)
 (set-info :source |Float32-vs-Float64 round-off error bound for the FPTaylor
   'turbine1' kernel. SAT = an input in range whose single-precision error
-  abs(f32 - f64) exceeds 1e-6 (measured in double). Generated; not hand-tuned.|)
+  abs(f32 - f64) exceeds 3.5e-6 (measured in double). Generated; not hand-tuned.|)
 (set-info :category "crafted")
 (set-info :status sat)
 (declare-const v (_ FloatingPoint 8 24))
@@ -20,5 +20,5 @@
 (define-fun f32 () (_ FloatingPoint 8 24) (fp.sub roundNearestTiesToEven (fp.sub roundNearestTiesToEven (fp.add roundNearestTiesToEven ((_ to_fp 8 24) (_ bv1077936128 32)) (fp.div roundNearestTiesToEven ((_ to_fp 8 24) (_ bv1073741824 32)) (fp.mul roundNearestTiesToEven r r))) (fp.div roundNearestTiesToEven (fp.mul roundNearestTiesToEven (fp.mul roundNearestTiesToEven ((_ to_fp 8 24) (_ bv1040187392 32)) (fp.sub roundNearestTiesToEven ((_ to_fp 8 24) (_ bv1077936128 32)) (fp.mul roundNearestTiesToEven ((_ to_fp 8 24) (_ bv1073741824 32)) v))) (fp.mul roundNearestTiesToEven (fp.mul roundNearestTiesToEven w w) (fp.mul roundNearestTiesToEven r r))) (fp.sub roundNearestTiesToEven ((_ to_fp 8 24) (_ bv1065353216 32)) v))) ((_ to_fp 8 24) (_ bv1083179008 32))))
 (define-fun f64 () (_ FloatingPoint 11 53) (fp.sub roundNearestTiesToEven (fp.sub roundNearestTiesToEven (fp.add roundNearestTiesToEven ((_ to_fp 11 53) (_ bv4613937818241073152 64)) (fp.div roundNearestTiesToEven ((_ to_fp 11 53) (_ bv4611686018427387904 64)) (fp.mul roundNearestTiesToEven rd rd))) (fp.div roundNearestTiesToEven (fp.mul roundNearestTiesToEven (fp.mul roundNearestTiesToEven ((_ to_fp 11 53) (_ bv4593671619917905920 64)) (fp.sub roundNearestTiesToEven ((_ to_fp 11 53) (_ bv4613937818241073152 64)) (fp.mul roundNearestTiesToEven ((_ to_fp 11 53) (_ bv4611686018427387904 64)) vd))) (fp.mul roundNearestTiesToEven (fp.mul roundNearestTiesToEven wd wd) (fp.mul roundNearestTiesToEven rd rd))) (fp.sub roundNearestTiesToEven ((_ to_fp 11 53) (_ bv4607182418800017408 64)) vd))) ((_ to_fp 11 53) (_ bv4616752568008179712 64))))
 (define-fun err () (_ FloatingPoint 11 53) (fp.abs (fp.sub roundNearestTiesToEven ((_ to_fp 11 53) roundNearestTiesToEven f32) f64)))
-(assert (fp.gt err ((_ to_fp 11 53) (_ bv4517329193108106637 64))))
+(assert (fp.gt err ((_ to_fp 11 53) (_ bv4525374567597629367 64))))
 (check-sat)
