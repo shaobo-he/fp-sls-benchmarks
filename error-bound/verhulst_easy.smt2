@@ -1,0 +1,16 @@
+(set-info :smt-lib-version 2.6)
+(set-logic QF_FP)
+(set-info :source |Float32-vs-Float64 round-off error bound for the FPTaylor
+  'verhulst' kernel. SAT = an input in range whose single-precision error
+  abs(f32 - f64) exceeds 1e-8 (measured in double). Generated; not hand-tuned.|)
+(set-info :category "crafted")
+(set-info :status sat)
+(declare-const x (_ FloatingPoint 8 24))
+(define-fun xd () (_ FloatingPoint 11 53) ((_ to_fp 11 53) roundNearestTiesToEven x))
+(assert (fp.geq x ((_ to_fp 8 24) roundNearestTiesToEven 0.1)))
+(assert (fp.leq x ((_ to_fp 8 24) roundNearestTiesToEven 0.3)))
+(define-fun f32 () (_ FloatingPoint 8 24) (fp.div roundNearestTiesToEven (fp.mul roundNearestTiesToEven ((_ to_fp 8 24) roundNearestTiesToEven 4.0) x) (fp.add roundNearestTiesToEven ((_ to_fp 8 24) roundNearestTiesToEven 1.0) (fp.div roundNearestTiesToEven x ((_ to_fp 8 24) roundNearestTiesToEven 1.11)))))
+(define-fun f64 () (_ FloatingPoint 11 53) (fp.div roundNearestTiesToEven (fp.mul roundNearestTiesToEven ((_ to_fp 11 53) roundNearestTiesToEven 4.0) xd) (fp.add roundNearestTiesToEven ((_ to_fp 11 53) roundNearestTiesToEven 1.0) (fp.div roundNearestTiesToEven xd ((_ to_fp 11 53) roundNearestTiesToEven 1.11)))))
+(define-fun err () (_ FloatingPoint 11 53) (fp.abs (fp.sub roundNearestTiesToEven ((_ to_fp 11 53) roundNearestTiesToEven f32) f64)))
+(assert (fp.gt err ((_ to_fp 11 53) roundNearestTiesToEven 0.00000001)))
+(check-sat)

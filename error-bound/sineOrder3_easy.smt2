@@ -1,0 +1,16 @@
+(set-info :smt-lib-version 2.6)
+(set-logic QF_FP)
+(set-info :source |Float32-vs-Float64 round-off error bound for the FPTaylor
+  'sineOrder3' kernel. SAT = an input in range whose single-precision error
+  abs(f32 - f64) exceeds 1e-8 (measured in double). Generated; not hand-tuned.|)
+(set-info :category "crafted")
+(set-info :status sat)
+(declare-const z (_ FloatingPoint 8 24))
+(define-fun zd () (_ FloatingPoint 11 53) ((_ to_fp 11 53) roundNearestTiesToEven z))
+(assert (fp.geq z ((_ to_fp 8 24) roundNearestTiesToEven (- 2))))
+(assert (fp.leq z ((_ to_fp 8 24) roundNearestTiesToEven 2)))
+(define-fun f32 () (_ FloatingPoint 8 24) (fp.sub roundNearestTiesToEven (fp.mul roundNearestTiesToEven ((_ to_fp 8 24) roundNearestTiesToEven 0.954929658551372) z) (fp.mul roundNearestTiesToEven ((_ to_fp 8 24) roundNearestTiesToEven 0.12900613773279798) (fp.mul roundNearestTiesToEven (fp.mul roundNearestTiesToEven z z) z))))
+(define-fun f64 () (_ FloatingPoint 11 53) (fp.sub roundNearestTiesToEven (fp.mul roundNearestTiesToEven ((_ to_fp 11 53) roundNearestTiesToEven 0.954929658551372) zd) (fp.mul roundNearestTiesToEven ((_ to_fp 11 53) roundNearestTiesToEven 0.12900613773279798) (fp.mul roundNearestTiesToEven (fp.mul roundNearestTiesToEven zd zd) zd))))
+(define-fun err () (_ FloatingPoint 11 53) (fp.abs (fp.sub roundNearestTiesToEven ((_ to_fp 11 53) roundNearestTiesToEven f32) f64)))
+(assert (fp.gt err ((_ to_fp 11 53) roundNearestTiesToEven 0.00000001)))
+(check-sat)
